@@ -43,7 +43,7 @@ def time_to_seconds(time):
 
 
 @Client.on_message(
-    command(["play", "Dj wale babu", "f"music@{BOT_USERNAME"])
+    command(["play", "p", "Gaana"])
     & filters.group
     & ~filters.edited
     & ~filters.forwarded

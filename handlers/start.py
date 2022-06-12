@@ -25,21 +25,21 @@ async def start_(client: Client, message: Message):
             [
                 [
                     InlineKeyboardButton(
-                        "✧ ᴀᴅᴅ ᴍᴇ ✧", url=f"https://t.me/{bu}?startgroup=true"
+                        "✧ Add Me In Your Group ✧", url=f"https://t.me/{bu}?startgroup=true"
                        ),
                   ],[
                     InlineKeyboardButton(
-                        "✧ ᴏᴡɴᴇʀ ✧", url=f"https://t.me/{me}"
+                        "✧ Owner ✧", url=f"https://t.me/{me}"
                     ),
                     InlineKeyboardButton(
-                        "✧ sᴜᴘᴘᴏʀᴛ ✧", url=f"https://t.me/{SUPPORT_GROUP}"
+                        "✧ Support Group ✧", url=f"https://t.me/{SUPPORT_GROUP}"
                     )
                 ],[
                     InlineKeyboardButton(
-                        "✧ ɪɴʟɪɴᴇ ✧", switch_inline_query_current_chat=""
+                        "✧ Inline Query ✧", switch_inline_query_current_chat=""
                     ),
                     InlineKeyboardButton(
-                        "✧ sᴏᴜʀᴄᴇ ᴄᴏᴅᴇ ✧", url="https://github.com/HeroX-xD/Tricky-anonmusic"
+                        "✧ Update Channel ✧", url="https://t.me/julietmusicwali"
                     )]
             ]
        ),

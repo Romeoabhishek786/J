@@ -31,7 +31,7 @@ async def resume(_, message: Message):
     await message.reply_text("» ᴛʀᴀᴄᴋ ʀᴇsᴜᴍᴇᴅ ʙʏ {} 🤗".format( message.from_user.mention ), )
 
 
-@Client.on_message(command(["end", " stop"]) & other_filters)
+@Client.on_message(command(["end", " stop", " khatam"]) & other_filters)
 @errors
 @authorized_users_only
 async def stop(_, message: Message):

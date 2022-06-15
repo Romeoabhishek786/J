@@ -20,3 +20,4 @@ COMMAND_PREFIXES = list(getenv("COMMAND_PREFIXES", "? ~ + • / ! ^ .").split())
 PMPERMIT = getenv("PMPERMIT", "ENABLE")
 SUDO_USERS = list(map(int, getenv("SUDO_USERS", "5124507794").split()))
 LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", ""))
+LOG_FILE_NAME = "Musictestlogs.txt"

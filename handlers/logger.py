@@ -8,7 +8,7 @@
 # All rights reserved.
 
 from config import LOG, LOG_GROUP_ID
-from Music Test import app
+from Musictest import app
 from Musictest.utils.database import is_on_off
 
 

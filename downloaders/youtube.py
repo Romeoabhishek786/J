@@ -3,8 +3,6 @@ from yt_dlp import YoutubeDL
 from config import BOT_NAME as bn, DURATION_LIMIT
 from helpers.errors import DurationLimitError
 import asyncio
-import os
-import re
 from typing import Union
 import aiohttp
 import yt_dlp

@@ -1,95 +1,51 @@
-from os import path
+from pyrogram import Client, errors
+from pyrogram.types import InlineQuery, InlineQueryResultArticle, InputTextMessageContent
 
-from yt_dlp import YoutubeDL
-
-from config import BOT_NAME as bn, DURATION_LIMIT
-from helpers.errors import DurationLimitError
-
-ytdl = YoutubeDL(
-    {
-        "outtmpl": "downloads/%(id)s.%(ext)s",
-        "format": "bestaudio/best",
-        "geo_bypass": True,
-        "nocheckcertificate": True,
-        "quiet": True,
-        "no_warnings": True,
-    }
-)
+from youtubesearchpython import VideosSearch
 
 
-def download(videoid: str, mystic, title) -> str:
-    flex = {}
-    url = f"https://www.youtube.com/watch?v={videoid}"
+@Client.on_inline_query()
+async def inline(client: Client, query: InlineQuery):
+    answers = []
+    search_query = query.query.lower().strip().rstrip()
 
-    def my_hook(d):
-        if d["status"] == "downloading":
-            percentage = d["_percent_str"]
-            per = (str(percentage)).replace(".", "", 1).replace("%", "", 1)
-            per = int(per)
-            eta = d["eta"]
-            speed = d["_speed_str"]
-            size = d["_total_bytes_str"]
-            bytesx = d["total_bytes"]
-            if str(bytesx) in flex:
-                pass
-            else:
-                flex[str(bytesx)] = 1
-            if flex[str(bytesx)] == 1:
-                flex[str(bytesx)] += 1
-                try:
-                    if eta > 2:
-                        mystic.edit(
-                            f"**{MUSIC_BOT_NAME} Downloader**\n\n**Title:** {title[:50]}:\n**FileSize:** {size}\n\n**<u>Downloaded:</u>**\n**Speed:** {speed}\n**ETA:** {eta} Seconds\n\n\n{percentage} ▓▓▓▓▓▓▓▓▓▓▓▓ 100%"
+    if search_query == "":
+        await client.answer_inline_query(
+            query.id,
+            results=answers,
+            switch_pm_text="ᴛʏᴩᴇ ᴀ ʏᴏᴜᴛᴜʙᴇ ᴠɪᴅᴇᴏ ɴᴀᴍᴇ...",
+            switch_pm_parameter="help",
+            cache_time=0
+        )
+    else:
+        search = VideosSearch(search_query, limit=50)
+
+        for result in search.result()["result"]:
+            answers.append(
+                InlineQueryResultArticle(
+                    title=result["title"],
+                    description="{}, {} views.".format(
+                        result["duration"],
+                        result["viewCount"]["short"]
+                    ),
+                    input_message_content=InputTextMessageContent(
+                        "https://www.youtube.com/watch?v={}".format(
+                            result["id"]
                         )
-                except Exception as e:
-                    pass
-            if per > 250:
-                if flex[str(bytesx)] == 2:
-                    flex[str(bytesx)] += 1
-                    if eta > 2:
-                        mystic.edit(
-                            f"**{MUSIC_BOT_NAME}Downloader**\n\n**Title:** {title[:50]}:\n**FileSize:** {size}\n\n**<u>Downloaded:</u>**\n**Speed:** {speed}\n**ETA:** {eta} Seconds\n\n\n{percentage} ███▓▓▓▓▓▓▓▓▓ 100%"
-                        )
-            if per > 500:
-                if flex[str(bytesx)] == 3:
-                    flex[str(bytesx)] += 1
-                    if eta > 2:
-                        mystic.edit(
-                            f"**{MUSIC_BOT_NAME} Downloader**\n\n**Title:** {title[:50]}:\n**FileSize:** {size}\n\n**<u>Downloaded:</u>**\n**Speed:** {speed}\n**ETA:** {eta} Seconds\n\n\n{percentage} ██████▓▓▓▓▓▓ 100%"
-                        )
-            if per > 800:
-                if flex[str(bytesx)] == 4:
-                    flex[str(bytesx)] += 1
-                    if eta > 2:
-                        mystic.edit(
-                            f"**{MUSIC_BOT_NAME} Downloader**\n\n**Title:** {title[:50]}:\n**FileSize:** {size}\n\n**<u>Downloaded:</u>**\n**Speed:** {speed}\n**ETA:** {eta} Seconds\n\n\n{percentage} ██████████▓▓ 100%"
-                        )
-        if d["status"] == "finished":
-            try:
-                taken = d["_elapsed_str"]
-            except Exception as e:
-                taken = "00:00"
-            size = d["_total_bytes_str"]
-            mystic.edit(
-                f"**{MUSIC_BOT_NAME} Downloader**\n\n**Title:** {title[:50]}:\n\n100% ████████████100%\n\n**Time Taken:** {taken} Seconds\n\nConverting Audio[FFmpeg Process]"
+                    ),
+                    thumb_url=result["thumbnails"][0]["url"]
+                )
             )
 
-    ydl_optssx = {
-        "format": "bestaudio/best",
-        "outtmpl": "downloads/%(id)s.%(ext)s",
-        "geo_bypass": True,
-        "nocheckcertificate": True,
-        "quiet": True,
-        "no_warnings": True,
-    }
-    try:
-        x = YoutubeDL(ydl_optssx)
-        x.add_progress_hook(my_hook)
-        dloader = x.download([url])
-    except Exception as y_e:
-        return print(y_e)
-    else:
-        dloader
-    info = x.extract_info(url, False)
-    xyz = path.join("downloads", f"{info['id']}.{info['ext']}")
-    return xyz
+        try:
+            await query.answer(
+                results=answers,
+                cache_time=0
+            )
+        except errors.QueryIdInvalid:
+            await query.answer(
+                results=answers,
+                cache_time=0,
+                switch_pm_text="ᴇʀʀᴏʀ : sᴇᴀʀᴄʜ ᴛɪᴍᴇᴅ ᴏᴜᴛ ",
+                switch_pm_parameter="",
+            )

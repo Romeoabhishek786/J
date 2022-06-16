@@ -11,7 +11,6 @@ async def start_(client: Client, message: Message):
     await message.delete()
     await message.reply_photo(
         photo=f"{START_IMG}",
-        caption=f"""**━━━━━━━━━━━━━━━━━━
- ʜᴇʏ {message.from_user.mention()} !
+        
 
        

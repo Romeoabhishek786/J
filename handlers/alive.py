@@ -1,102 +1,23 @@
 import asyncio
-from time import time
-from datetime import datetime
-from modules.helpers.filters import command
+
+from helpers.filters import command
+from config import BOT_NAME as bn, BOT_USERNAME as bu, SUPPORT_GROUP, OWNER_USERNAME as me, START_IMG
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 
-START_TIME = datetime.utcnow()
-START_TIME_ISO = START_TIME.replace(microsecond=0).isoformat()
-TIME_DURATION_UNITS = (
-    ('week', 60 * 60 * 24 * 7),
-    ('day', 60 * 60 * 24),
-    ('hour', 60 * 60),
-    ('min', 60),
-    ('sec', 1)
-)
-
-async def _human_time_duration(seconds):
-    if seconds == 0:
-        return 'inf'
-    parts = []
-    for unit, div in TIME_DURATION_UNITS:
-        amount, seconds = divmod(int(seconds), div)
-        if amount > 0:
-            parts.append('{} {}{}'
-                         .format(amount, unit, "" if amount == 1 else "s"))
-    return ', '.join(parts)
-    
-   
-
-@Client.on_message(command("start") & filters.private & ~filters.edited)
+@Client.on_message(command("romeo") & filters.private & ~filters.group & ~filters.edited)
 async def start_(client: Client, message: Message):
+    await message.delete()
     await message.reply_photo(
-        photo=f"https://telegra.ph/Juliet-Pic-06-04",
-        caption=f"""**━━━━━━━━━━━━━━━━━━━━━━━━ Hello, My name is Juliet.
+        photo=f"{START_IMG}",
+        caption=f"""**━━━━━━━━━━━━━━━━━━
+ ʜᴇʏ {message.from_user.mention()} !
 
-I'm a telegram streaming bot with some useful features. Supporting Youtube only now. 
+        ᴛʜɪs ɪs [{bn}](t.me/{bu}), ᴀ sᴜᴘᴇʀ ғᴀsᴛ ᴠᴄ ᴘʟᴀʏᴇʀ ʙᴏᴛ ғᴏʀ ᴛᴇʟᴇɢʀᴀᴍ ɢʀᴏᴜᴘ ᴠɪᴅᴇᴏᴄʜᴀᴛs...
 
-Feel free to add me to your groups....😇😇
-┏━━━━━━━━━━━━━━━━━┓
-┣★ ᴄʀᴇᴀᴛᴏʀ : [Romeo Abhishek](https://t.me/Romeoabhishek)
-┣★ ᴜᴘᴅᴀᴛᴇs : [Official Channel](https://t.me/julietmusicwali)
-┣★ sᴜᴘᴘᴏʀᴛ : [Juliet Support](https://t.me/JulietSupport)
-┗━━━━━━━━━━━━━━━━━┛
-
-💞 ɪғ ʏᴏᴜ ʜᴀᴠᴇ ᴀɴʏ ǫᴜᴇsᴛɪᴏɴs ᴛʜᴇɴ
-ᴅᴍ ᴛᴏ ᴍʏ [ʟᴇɢᴇɴᴅ ᴏᴡɴᴇʀ](https://t.me/Romeoabhishek) ...
-━━━━━━━━━━━━━━━━━━━━━━━━**""",
-    reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(text="➕ ADD Me To Your Group ➕", url="t.me/JulieMusicWaliBot?startgroup=new"),
-                ],
-                [
-                    InlineKeyboardButton(text="🔱 Updates 🔱", url=f"https://t.me/julietmusicwali"),
-                    InlineKeyboardButton(text="🔱 Support 🔱", url=f"https://t.me/Julietsupport"),
-                ],
-                [
-                    InlineKeyboardButton(text="Bot Owner", url="t.me/Romeoabhishek"),
-                ],
-           ]
-        ),
-    )
-    
-    
-@Client.on_message(command(["/start", "/alive", "Juliet"]) & filters.group & ~filters.edited)
-async def start(client: Client, message: Message):
-    await message.reply_photo(
-        photo=f"https://telegra.ph/Juliet-Pic-06-04",
-        caption=f"""Thanks for having me in group.\nJuliet Music Bot is alive.\n\nFor any assistance or help, checkout our support group and channel.""",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(text="➕ ADD Me To Your Group ➕", url="t.me/JulieMusicWaliBot?startgroup=new"),
-                ],
-                [
-                    InlineKeyboardButton(text="🔱 Updates 🔱", url=f"https://t.me/julietmusicwali"),
-                    InlineKeyboardButton(text="🔱 Support 🔱", url=f"https://t.me/Julietsupport"),
-                ],
-                [
-                    InlineKeyboardButton(text="Bot Owner", url="t.me/Romeoabhishek"),
-                ],
-           ]
-        ),
-    )
+ᴀʟʟ ᴏꜰ ᴍʏ ᴄᴏᴍᴍᴀɴᴅs ᴄᴀɴ ʙᴇ ᴜsᴇᴅ ᴡɪᴛʜ ᴍʏ ᴄᴏᴍᴍᴀɴᴅ ʜᴀɴᴅʟᴇʀs : ( `/ . • $ ^ ~ + * ?` )
 
 
-@Client.on_message(command(["repo", "#repo", "@repo", "/repo", "source"]) & filters.group & ~filters.edited)
-async def help(client: Client, message: Message):
-    await message.reply_photo(
-        photo=f"https://telegra.ph/Juliet-Pic-06-04",
-        caption=f"""""",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        "💥 ᴄʟɪᴄᴋ ᴍᴇ ᴛᴏ ɢᴇᴛ ʀᴇᴘᴏ 💞", url=f"https://github.com/Romeoabhishek/Julietsupport")
-                ]
-            ]
-        ),
-    )
+💞 ɪғ ʏᴏᴜ ʜᴀᴠᴇ ᴀɴʏ ǫᴜᴇsᴛɪᴏɴs ᴀʙᴏᴜᴛ ᴍᴇ ᴛʜᴇɴ ᴅᴍ ᴛᴏ ᴍʏ [ᴏᴡɴᴇʀ](t.me/{me}) ...
+━━━━━━━━━━━━━━━━━━**""",

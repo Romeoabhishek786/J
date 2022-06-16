@@ -1,35 +1,103 @@
 import asyncio
-from pyrogram.types import Message
+from time import time
+from datetime import datetime
+from modules.helpers.filters import command
+from modules.helpers.command import commandpro
 from pyrogram import Client, filters
-from helpers.filters import command, other_filters
-from pyrogram.errors import UserAlreadyParticipant
-from helpers.decorators import authorized_users_only
-from callsmusic.callsmusic import client as user
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 
-@Client.on_message(
-    command(["join", "assistant", " userbotjoin"]) & ~filters.private & ~filters.bot
+START_TIME = datetime.utcnow()
+START_TIME_ISO = START_TIME.replace(microsecond=0).isoformat()
+TIME_DURATION_UNITS = (
+    ('week', 60 * 60 * 24 * 7),
+    ('day', 60 * 60 * 24),
+    ('hour', 60 * 60),
+    ('min', 60),
+    ('sec', 1)
 )
-@authorized_users_only
-async def join_chat(c: Client, m: Message):
-    await m.delete()
-    chat_id = m.chat.id
-    try:
-        invite_link = await m.chat.export_invite_link()
-        if "+" in invite_link:
-            link_hash = (invite_link.replace("+", "")).split("t.me/")[1]
-            await user.join_chat(f"https://t.me/joinchat/{link_hash}")
-        await m.chat.promote_member(
-            (await user.get_me()).id,
-            can_manage_voice_chats=True
-        )
-        return await user.send_message(chat_id, "🙂ᴀssɪsᴛᴀɴᴛ sᴜᴄᴄᴇssꜰᴜʟʟʏ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ᴄʜᴀᴛ ʙᴀʙʏ.​")
-    except UserAlreadyParticipant:
-        admin = await m.chat.get_member((await user.get_me()).id)
-        if not admin.can_manage_voice_chats:
-            await m.chat.promote_member(
-                (await user.get_me()).id,
-                can_manage_voice_chats=True
-            )
-            return await user.send_message(chat_id, "🙂ᴀssɪsᴛᴀɴᴛ ᴀʟʀᴇᴀᴅʏ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ᴄʜᴀᴛ ʙᴀʙʏ.​")
-        return await user.send_message(chat_id, "🙂ᴀssɪsᴛᴀɴᴛ ᴀʟʀᴇᴀᴅʏ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ᴄʜᴀᴛ ʙᴀʙʏ.​")
+
+async def _human_time_duration(seconds):
+    if seconds == 0:
+        return 'inf'
+    parts = []
+    for unit, div in TIME_DURATION_UNITS:
+        amount, seconds = divmod(int(seconds), div)
+        if amount > 0:
+            parts.append('{} {}{}'
+                         .format(amount, unit, "" if amount == 1 else "s"))
+    return ', '.join(parts)
+    
+   
+
+@Client.on_message(command("start") & filters.private & ~filters.edited)
+async def start_(client: Client, message: Message):
+    await message.reply_photo(
+        photo=f"https://telegra.ph/Juliet-Pic-06-04",
+        caption=f"""**━━━━━━━━━━━━━━━━━━━━━━━━ Hello, My name is Juliet.
+
+I'm a telegram streaming bot with some useful features. Supporting Youtube only now. 
+
+Feel free to add me to your groups....😇😇
+┏━━━━━━━━━━━━━━━━━┓
+┣★ ᴄʀᴇᴀᴛᴏʀ : [Romeo Abhishek](https://t.me/Romeoabhishek)
+┣★ ᴜᴘᴅᴀᴛᴇs : [Official Channel](https://t.me/julietmusicwali)
+┣★ sᴜᴘᴘᴏʀᴛ : [Juliet Support](https://t.me/JulietSupport)
+┗━━━━━━━━━━━━━━━━━┛
+
+💞 ɪғ ʏᴏᴜ ʜᴀᴠᴇ ᴀɴʏ ǫᴜᴇsᴛɪᴏɴs ᴛʜᴇɴ
+ᴅᴍ ᴛᴏ ᴍʏ [ʟᴇɢᴇɴᴅ ᴏᴡɴᴇʀ](https://t.me/Romeoabhishek) ...
+━━━━━━━━━━━━━━━━━━━━━━━━**""",
+    reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(text="➕ ADD Me To Your Group ➕", url="t.me/JulieMusicWaliBot?startgroup=new"),
+                ],
+                [
+                    InlineKeyboardButton(text="🔱 Updates 🔱", url=f"https://t.me/julietmusicwali"),
+                    InlineKeyboardButton(text="🔱 Support 🔱", url=f"https://t.me/Julietsupport"),
+                ],
+                [
+                    InlineKeyboardButton(text="Bot Owner", url="t.me/Romeoabhishek"),
+                ],
+           ]
+        ),
+    )
+    
+    
+@Client.on_message(commandpro(["/start", "/alive", "Juliet"]) & filters.group & ~filters.edited)
+async def start(client: Client, message: Message):
+    await message.reply_photo(
+        photo=f"https://telegra.ph/Juliet-Pic-06-04",
+        caption=f"""Thanks for having me in group.\nJuliet Music Bot is alive.\n\nFor any assistance or help, checkout our support group and channel.""",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(text="➕ ADD Me To Your Group ➕", url="t.me/JulieMusicWaliBot?startgroup=new"),
+                ],
+                [
+                    InlineKeyboardButton(text="🔱 Updates 🔱", url=f"https://t.me/julietmusicwali"),
+                    InlineKeyboardButton(text="🔱 Support 🔱", url=f"https://t.me/Julietsupport"),
+                ],
+                [
+                    InlineKeyboardButton(text="Bot Owner", url="t.me/Romeoabhishek"),
+                ],
+           ]
+        ),
+    )
+
+
+@Client.on_message(commandpro(["repo", "#repo", "@repo", "/repo", "source"]) & filters.group & ~filters.edited)
+async def help(client: Client, message: Message):
+    await message.reply_photo(
+        photo=f"https://telegra.ph/Juliet-Pic-06-04",
+        caption=f"""""",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        "💥 ᴄʟɪᴄᴋ ᴍᴇ ᴛᴏ ɢᴇᴛ ʀᴇᴘᴏ 💞", url=f"https://github.com/Romeoabhishek/Julietsupport")
+                ]
+            ]
+        ),
+    )

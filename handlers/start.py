@@ -45,3 +45,8 @@ async def start_(client: Client, message: Message):
        ),
     )
 
+@Client.on_message(commandpro(["/romeo", "/alive", "@romeoabhishek"]) & filters.group & ~filters.edited)
+async def start(client: Client, message: Message):
+    await message.reply_photo(
+        photo=f"https://telegra.ph/Juliet-Pic-06-04",
+        caption=f"""Thanks for having me in group.\nJuliet Music Bot is alive.\n\nFor any assistance or help, checkout our support group and channel.""",
